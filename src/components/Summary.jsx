@@ -1,15 +1,12 @@
 import { useEffect, useState } from 'react';
 import { families } from '../data/parts';
-import { wordIndex, levelProgress, levelTitle } from '../lib/game';
+import { wordIndex, levelProgress, levelTitle, BADGES, dueWords } from '../lib/game';
 import { PartChips } from './Lesson';
 
 function Confetti() {
   const colors = ['#6c3fe0', '#21c99b', '#ff5c7a', '#ffb627', '#3da9fc'];
   const bits = Array.from({ length: 70 }, (_, i) => ({
-    left: Math.random() * 100,
-    delay: Math.random() * 0.8,
-    dur: 2 + Math.random() * 1.5,
-    color: colors[i % colors.length],
+    left: Math.random() * 100, delay: Math.random() * 0.8, dur: 2 + Math.random() * 1.5, color: colors[i % colors.length],
   }));
   return (
     <div className="confetti" aria-hidden="true">
@@ -20,28 +17,30 @@ function Confetti() {
   );
 }
 
-export default function Summary({ round, progress, familyId, newlyUnlocked, leveledUp, onPlayAgain, onHome }) {
+export default function Summary({ round, progress, familyId, newlyUnlocked, leveledUp, newBadges, onPlayAgain, onHome, onReview }) {
   const right = round.results.filter((r) => r.correct).length;
   const missed = round.results.filter((r) => !r.correct);
   const lp = levelProgress(progress.xp);
   const perfect = right === round.total;
-  const [confetti, setConfetti] = useState(perfect || newlyUnlocked || leveledUp);
+  const celebrate = perfect || newlyUnlocked || leveledUp || newBadges.length > 0;
+  const [confetti, setConfetti] = useState(celebrate);
   useEffect(() => {
     const t = setTimeout(() => setConfetti(false), 3500);
     return () => clearTimeout(t);
   }, []);
-
-  const fam = familyId === 'mix' ? null : families.find((f) => f.id === familyId);
+  const fam = familyId === 'mix' || familyId === 'review' ? null : families.find((f) => f.id === familyId);
+  const due = dueWords(progress).length;
 
   return (
     <div className="wrap">
       {confetti && <Confetti />}
-      <section className="card summary">
-        <div className="eyebrow">{fam ? fam.name : 'Mixed round'}</div>
+      <section className="card summary lift">
+        <div className="eyebrow">{fam ? fam.name : familyId === 'review' ? 'Review' : 'Mixed round'}</div>
         <div className="score">{right}/{round.total}</div>
         <div style={{ fontWeight: 800, fontSize: '1.15rem' }}>
           {perfect ? 'Perfect round!' : right >= round.total * 0.7 ? 'Strong work.' : 'Every miss is a word you now know better.'}
         </div>
+        {round.learned > 0 && <p className="muted" style={{ margin: '6px 0 0' }}>You met {round.learned} new {round.learned === 1 ? 'word' : 'words'}. They'll come back tomorrow for review.</p>}
         <div className="summary-grid">
           <div className="tile"><b>+{round.xp}</b><span>XP earned</span></div>
           <div className="tile"><b>{progress.streak}</b><span>day streak</span></div>
@@ -49,8 +48,13 @@ export default function Summary({ round, progress, familyId, newlyUnlocked, leve
         </div>
         {leveledUp && <div className="unlock-banner">Level up! You're now a {levelTitle(lp.level)}.</div>}
         {newlyUnlocked && <div className="unlock-banner">New branch unlocked: {newlyUnlocked.name}</div>}
+        {newBadges.map((id) => {
+          const b = BADGES.find((x) => x.id === id);
+          return <div key={id} className="unlock-banner badge-banner">Badge earned: {b.name}. {b.desc}</div>;
+        })}
         <div className="row" style={{ marginTop: 16, justifyContent: 'center' }}>
           <button className="btn mint" onClick={onPlayAgain}>Play again</button>
+          {due > 0 && familyId !== 'review' && <button className="btn sky" onClick={onReview}>Review {Math.min(due, 10)} due</button>}
           <button className="btn ghost" onClick={onHome}>Back to the tree</button>
         </div>
       </section>
@@ -62,10 +66,11 @@ export default function Summary({ round, progress, familyId, newlyUnlocked, leve
             {missed.map((m) => {
               const w = wordIndex[m.word];
               return (
-                <div className="word-row" key={m.word}>
+                <div className="word-row" key={m.word + m.mode}>
                   <div className="row"><span className="w">{w.w}</span><span className="pos">{w.pos}</span></div>
                   <div>{w.d}</div>
                   <PartChips ids={w.p} highlight={w.r} />
+                  {w.syn.length > 0 && <div className="muted" style={{ marginTop: 6, fontSize: '0.9rem' }}>Similar: {w.syn.join(', ')}</div>}
                 </div>
               );
             })}

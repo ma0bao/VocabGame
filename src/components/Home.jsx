@@ -7,7 +7,7 @@ import {
 import { todayKey } from '../lib/progress';
 import { PartChips } from './Lesson';
 
-const FAMILY_GLYPHS = { F1: 'Aa', F2: '→', F3: '♥', F4: '⇕', F5: '⏱', F6: '♛', F7: '±', F8: '◎' };
+const FAMILY_GLYPHS = { F1: 'Aa', F2: '→', F3: '♥', F4: '⇕', F5: '⏱', F6: '♛', F7: '±', F8: '◎', F9: '☀', F10: '✋', F11: '⚡', F12: '♪' };
 
 // The branch the player is working on: the highest unlocked one that isn't done yet.
 function currentFamily(progress) {
@@ -25,7 +25,7 @@ function featuredWord(progress, fam) {
   return list[h % list.length];
 }
 
-export default function Home({ progress, onPlay, onLesson, onAccount, user, syncState }) {
+export default function Home({ progress, onPlay, onLesson, onReview, due }) {
   const lp = levelProgress(progress.xp);
   const mastered = masteredCount(progress);
   const pct = Math.round((lp.into / lp.span) * 100);
@@ -42,10 +42,10 @@ export default function Home({ progress, onPlay, onLesson, onAccount, user, sync
           <span>{lp.next - progress.xp} XP to go</span>
         </div>
         <h1 style={{ marginTop: 10 }}>
-          {firstTime ? 'Every big word is small parts snapped together.' : `${mastered} of ${words.length} words mastered.`}
+          {firstTime ? 'Every big word is small parts snapped together.' : progress.name ? `${progress.name}, ${mastered} of ${words.length} words mastered.` : `${mastered} of ${words.length} words mastered.`}
         </h1>
         <div className="featured">
-          <div className="eyebrow">{firstTime ? 'Try one' : `Today's word from ${cur.name}`}</div>
+          <div className="eyebrow">{firstTime ? 'Like this one' : `Today's word from ${cur.name}`}</div>
           <div className="word">{feat.w}<small>{feat.pos}</small></div>
           <PartChips ids={feat.p} big />
           <p style={{ margin: '10px 0 0' }}>{feat.d}</p>
@@ -56,12 +56,14 @@ export default function Home({ progress, onPlay, onLesson, onAccount, user, sync
           </div>
         </div>
         <div className="quick">
-          <button className="btn mint" onClick={() => onPlay(firstTime ? cur.id : 'mix')}>
-            {firstTime ? `Play ${cur.name}` : 'Play a mixed round'}
+          <button className="btn mint" onClick={() => onPlay(cur.id)}>
+            {firstTime ? `Start with ${cur.name}` : `Play ${cur.name}`}
           </button>
-          <button className="btn ghost" onClick={onAccount}>
-            {user ? (syncState === 'synced' ? 'Synced' : syncState === 'syncing' ? 'Syncing…' : 'Account') : 'Sign in to sync'}
-          </button>
+          {due > 0 ? (
+            <button className="btn sky" onClick={() => onPlay('review')}>Review {Math.min(due, 10)} due {due === 1 ? 'word' : 'words'}</button>
+          ) : (
+            <button className="btn ghost" onClick={onReview}>Review schedule</button>
+          )}
         </div>
       </section>
 

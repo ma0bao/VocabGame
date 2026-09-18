@@ -2,7 +2,10 @@
 // and broken into parts (`p`, ids from parts.js glossary).
 // s = SAT-style sentence with ___ where the word goes.
 
-export const words = [
+import { words2 } from './words2.js';
+import { synonyms } from './synonyms.js';
+
+const words1 = [
   // ================= F1 Say & Write =================
   // dict
   { w: 'edict', pos: 'noun', r: 'dict', p: ['ex', 'dict'], d: 'an official order issued by an authority', s: 'The king\'s ___ banned all gatherings after sundown.' },
@@ -240,3 +243,5 @@ export const words = [
   { w: 'extricate', pos: 'verb', r: 'ex', p: ['ex', 'tric', 'ate'], d: 'to free from a difficult situation', s: 'It took an hour to ___ the kitten from the engine compartment.' },
   { w: 'exuberant', pos: 'adj', r: 'ex', p: ['ex', 'uber', 'ent'], d: 'full of energy and excitement', s: 'The ___ puppy knocked over two lamps in its first hour home.' },
 ];
+
+export const words = [...words1, ...words2].map((w) => ({ ...w, syn: synonyms[w.w]?.syn || [], ant: synonyms[w.w]?.ant || [] }));

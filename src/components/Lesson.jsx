@@ -63,6 +63,7 @@ export default function Lesson({ rootId, progress, onBack, onPlay, onLesson, mar
                 </div>
                 <div>{w.d}</div>
                 <PartChips ids={w.p} highlight={rootId} />
+                {w.syn.length > 0 && <div className="muted" style={{ marginTop: 6, fontSize: '0.85rem' }}>Similar: {w.syn.join(', ')}{w.ant.length > 0 && ` · Opposite: ${w.ant[0]}`}</div>}
                 <div className="muted" style={{ marginTop: 6, fontSize: '0.9rem' }}>
                   “{w.s.replace('___', w.w)}”
                 </div>
