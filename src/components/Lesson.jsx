@@ -2,15 +2,15 @@ import { useEffect } from 'react';
 import { families, glossary, rootToFamily } from '../data/parts';
 import { wordsByRoot, wordScore, MASTERED_AT } from '../lib/game';
 
-export function PartChips({ ids, highlight, big }) {
+export function PartChips({ ids, highlight, big, huge }) {
   return (
     <div className={`parts ${big ? 'q-parts' : ''}`}>
       {ids.map((id, i) => {
         const g = glossary[id];
         return (
-          <span key={id + i} style={{ display: 'contents' }}>
+          <span key={id + i} className="tile-group">
             {i > 0 && <span className="plus">+</span>}
-            <span className={`part ${highlight === id ? 'hl' : ''} ${big ? 'big' : ''}`}>
+            <span className={`part ${g.kind} ${highlight === id ? 'hl' : ''} ${huge ? 'huge' : big ? 'big' : ''}`}>
               <b>{g.form.split(' /')[0]}</b>
               <span>{g.meaning}</span>
             </span>
@@ -37,18 +37,18 @@ export default function Lesson({ rootId, progress, onBack, onPlay, onLesson, mar
 
   return (
     <div className="wrap">
-      <button className="back" onClick={onBack}>← Root tree</button>
+      <button className="back" onClick={onBack}>Back to the tree</button>
       <section className="card">
-        <div className="eyebrow">{fam.name} · root {idx + 1} of {fam.roots.length}</div>
+        <div className="eyebrow">{fam.name}, root {idx + 1} of {fam.roots.length}</div>
         <div className="root-hero" style={{ marginTop: 6 }}>
           <div className="big">{g.form}</div>
           <div className="meaning">= {g.meaning}</div>
-          <div className="muted">{g.origin}{g.hint ? ` · ${g.hint}` : ''}</div>
+          <div className="muted">{g.hint || ''} From {g.origin}.</div>
         </div>
       </section>
 
       <section className="card">
-        <div className="eyebrow">Words built on it</div>
+        <div className="eyebrow">Words built on {g.form.split(' /')[0]}</div>
         <div className="word-list">
           {list.map((w) => {
             const s = wordScore(progress, w.w);
@@ -73,12 +73,12 @@ export default function Lesson({ rootId, progress, onBack, onPlay, onLesson, mar
       </section>
 
       <div className="row" style={{ marginTop: 14 }}>
-        {prev && <button className="btn ghost sm" onClick={() => onLesson(prev)}>← {glossary[prev].form.split(' /')[0]}</button>}
+        {prev && <button className="btn ghost sm" onClick={() => onLesson(prev)}>Previous: {glossary[prev].form.split(' /')[0]}</button>}
         <span className="spacer" />
         {next ? (
-          <button className="btn sm" onClick={() => onLesson(next)}>Next root: {glossary[next].form.split(' /')[0]} →</button>
+          <button className="btn sm" onClick={() => onLesson(next)}>Next root: {glossary[next].form.split(' /')[0]}</button>
         ) : (
-          <button className={`btn sm ${fam.color === 'grape' ? '' : fam.color}`} onClick={() => onPlay(famId)}>▶ Play {fam.name}</button>
+          <button className={`btn sm ${fam.color === 'grape' ? '' : fam.color}`} onClick={() => onPlay(famId)}>Play {fam.name}</button>
         )}
       </div>
     </div>

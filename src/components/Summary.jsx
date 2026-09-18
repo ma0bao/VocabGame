@@ -37,27 +37,27 @@ export default function Summary({ round, progress, familyId, newlyUnlocked, leve
     <div className="wrap">
       {confetti && <Confetti />}
       <section className="card summary">
-        <div className="eyebrow">{fam ? fam.name : 'Mixed round'} · complete</div>
+        <div className="eyebrow">{fam ? fam.name : 'Mixed round'}</div>
         <div className="score">{right}/{round.total}</div>
         <div style={{ fontWeight: 800, fontSize: '1.15rem' }}>
           {perfect ? 'Perfect round!' : right >= round.total * 0.7 ? 'Strong work.' : 'Every miss is a word you now know better.'}
         </div>
         <div className="summary-grid">
           <div className="tile"><b>+{round.xp}</b><span>XP earned</span></div>
-          <div className="tile"><b>{progress.streak}🔥</b><span>day streak</span></div>
+          <div className="tile"><b>{progress.streak}</b><span>day streak</span></div>
           <div className="tile"><b>{lp.level}</b><span>{levelTitle(lp.level)}</span></div>
         </div>
-        {leveledUp && <div className="unlock-banner">⬆ Level up! You're now a {levelTitle(lp.level)}.</div>}
-        {newlyUnlocked && <div className="unlock-banner">🔓 New branch unlocked: {newlyUnlocked.name}!</div>}
+        {leveledUp && <div className="unlock-banner">Level up! You're now a {levelTitle(lp.level)}.</div>}
+        {newlyUnlocked && <div className="unlock-banner">New branch unlocked: {newlyUnlocked.name}</div>}
         <div className="row" style={{ marginTop: 16, justifyContent: 'center' }}>
-          <button className="btn mint" onClick={onPlayAgain}>▶ Play again</button>
-          <button className="btn ghost" onClick={onHome}>Root tree</button>
+          <button className="btn mint" onClick={onPlayAgain}>Play again</button>
+          <button className="btn ghost" onClick={onHome}>Back to the tree</button>
         </div>
       </section>
 
       {missed.length > 0 && (
         <section className="card missed">
-          <div className="eyebrow">Review the ones you missed</div>
+          <div className="eyebrow">Words to look at again</div>
           <div className="word-list">
             {missed.map((m) => {
               const w = wordIndex[m.word];

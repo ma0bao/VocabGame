@@ -80,7 +80,7 @@ export default function Play({ progress, familyId, onAnswer, onFinish, onQuit })
       </div>
 
       <div className="q-card" key={i}>
-        <span className="q-mode" style={{ background: meta.color }}>{meta.label}{fam ? ` · ${fam.name}` : ''}</span>
+        <span className="q-mode" style={{ background: meta.color }}>{meta.label}</span>
 
         {q.mode === 'define' && <div className="q-word">{q.target.w}</div>}
 
@@ -95,7 +95,7 @@ export default function Play({ progress, familyId, onAnswer, onFinish, onQuit })
           </p>
         )}
 
-        {q.mode === 'decode' && <PartChips ids={q.target.p} highlight={q.target.r} big />}
+        {q.mode === 'decode' && <PartChips ids={q.target.p} big />}
 
         {q.mode === 'root' && (
           <>
@@ -103,7 +103,7 @@ export default function Play({ progress, familyId, onAnswer, onFinish, onQuit })
               {q.target.w}
             </div>
             <div className="q-parts">
-              <span className="part big hl"><b>{q.rootForm}</b><span>= ?</span></span>
+              <span className="part big hl"><b>{q.rootForm}</b><span>means ?</span></span>
             </div>
           </>
         )}
@@ -144,7 +144,7 @@ export default function Play({ progress, familyId, onAnswer, onFinish, onQuit })
               </div>
             )}
             <button className="btn block" style={{ marginTop: 12 }} onClick={next} autoFocus>
-              {i + 1 >= questions.length ? 'See results' : 'Continue'} <span className="muted" style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem' }}>↵</span>
+              {i + 1 >= questions.length ? 'See results' : 'Continue'}
             </button>
           </div>
         )}

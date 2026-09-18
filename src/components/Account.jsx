@@ -30,7 +30,7 @@ export default function Account({ user, progress, syncState, onBack, onReset }) 
 
   return (
     <div className="wrap">
-      <button className="back" onClick={onBack}>← Back</button>
+      <button className="back" onClick={onBack}>Back</button>
 
       <section className="card">
         <div className="eyebrow">Your stats</div>
@@ -73,7 +73,7 @@ export default function Account({ user, progress, syncState, onBack, onReset }) 
       </section>
 
       <section className="card">
-        <div className="eyebrow">Danger zone</div>
+        <div className="eyebrow">Start over</div>
         <p className="muted" style={{ margin: '6px 0 10px' }}>Wipe all progress on this account and start from the first branch.</p>
         <button className="btn coral sm" onClick={() => { if (window.confirm('Reset all progress? This cannot be undone.')) onReset(); }}>Reset progress</button>
       </section>
